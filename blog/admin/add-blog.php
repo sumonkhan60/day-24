@@ -1,15 +1,23 @@
 <?php
-session_start();
-if($_SESSION['id'] == null) {
-    header('Location: index.php');
-}
+    session_start();
+    if($_SESSION['id'] == null) {
+        header('Location: index.php');
+    }
 
-require_once '../vendor/autoload.php';
-$login = new App\classes\Login();
+    require_once '../vendor/autoload.php';
+    $login = new App\classes\Login();
+    $blog = new App\classes\Info();
 
-if(isset($_GET['logout'])) {
-    $login->adminLogout();
-}
+    $queryResult = $blog->getAllPublishedCategoryInfo();
+
+    $message = "";
+    if(isset($_POST['btn'])) {
+        $message = $blog->saveAllBlogInfo($_POST);
+    }
+
+    if(isset($_GET['logout'])) {
+        $login->adminLogout();
+    }
 ?>
 <!DOCTYPE html>
 <html>
@@ -26,21 +34,23 @@ if(isset($_GET['logout'])) {
             <div class="col-sm-8 mx-auto">
                 <div class="card">
                     <div class="card-body">
-                        <form action="" method="post">
+                        <h3 style="color: green; "><?php echo $message; ?></h3>
+                        <form action="" method="post" enctype="multipart/form-data">
                         <div class="form-group row">
                             <label for="inputEmail3" class="col-sm-3 col-form-label">Category Name</label>
                             <div class="col-sm-9">
-                                <select name="category_name" class="form-control">
+                                <select name="category_id" class="form-control">
                                     <option>---Select Category Name---</option>
-                                    <option value="1">Category One</option>
-                                    <option value="2">Category Two</option>
+                                    <?php while ($categories = mysqli_fetch_assoc($queryResult)) { ?>
+                                    <option value="<?php echo $categories['id']; ?>"><?php echo $categories['category_name']; ?></option>
+                                    <?php } ?>
                                 </select>
                             </div>
                         </div>
                         <div class="form-group row">
                             <label for="inputPassword3" class="col-sm-3 col-form-label">Blog Title</label>
                             <div class="col-sm-9">
-                                <input type="text" name="blog_name" class="form-control" />
+                                <input type="text" name="blog_title" class="form-control" />
                             </div>
                         </div>
                         <div class="form-group row">
@@ -64,14 +74,14 @@ if(isset($_GET['logout'])) {
                         <div class="form-group row">
                             <label for="inputEmail3" class="col-sm-3 col-form-label">Publication Status</label>
                             <div class="col-sm-9">
-                                <input type="radio" name="status" value="0">Published
-                                <input type="radio" name="status" value="1">Unpublished
+                                <input type="radio" name="status" value="Published">Published
+                                <input type="radio" name="status" value="Unpublished">Unpublished
                             </div>
                         </div>
                         <div class="form-group row">
                             <div class="col-sm-3"></div>
                             <div class="col-sm-9">
-                                <button type="submit" class="btn btn-success btn-block" name="btn">Save Category Info</button>
+                                <button type="submit" class="btn btn-success btn-block" name="btn">Save Blog Info</button>
                             </div>
                         </div>
                     </form>

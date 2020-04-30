@@ -6,16 +6,15 @@
 
     require_once '../vendor/autoload.php';
     $login = new App\classes\Login();
-    $category = new App\classes\Category();
+    $info = new App\classes\Info();
 
-    $queryResult = $category->getAllCategoryInfo();
+    $queryResult = $info->getAllBlogInfo();
 
     $message = "";
     if(isset($_GET['delete'])) {
         $id = $_GET['id'];
-        $message = $category->deleteCategoryInfoById($id);
+        $message = $info->deleteBlogInfoById($id);
     }
-
 
     if(isset($_GET['logout'])) {
         $login->adminLogout();
@@ -40,24 +39,30 @@
                         <thead>
                         <tr>
                             <th>SL NO</th>
-                            <th>Category Name</th>
-                            <th>Category Description</th>
+                            <th>Category Id</th>
+                            <th>Blog Title</th>
+                            <th>Short Description</th>
+                            <th>Long Description</th>
+                            <th>BLog Image</th>
                             <th>Publication Status</th>
                             <th>Action</th>
                         </tr>
                         </thead>
                         <tbody>
                         <?php while ($manage = mysqli_fetch_assoc($queryResult)) { ?>
-                        <tr>
-                            <td><?php echo $manage['id']; ?></td>
-                            <td><?php echo $manage['category_name']; ?></td>
-                            <td><?php echo $manage['category_description']; ?></td>
-                            <td><?php echo $manage['status']; ?></td>
-                            <td>
-                                <a href="edit-category.php?id=<?php echo $manage['id']; ?>">Edit</a>
-                                <a href="?delete=true & id=<?php echo $manage['id']; ?>" onclick="return confirm('Are you sure to delete this !!!'); ">Delete</a>
-                            </td>
-                        </tr>
+                            <tr>
+                                <td><?php echo $manage['id']; ?></td>
+                                <td><?php echo $manage['category_id']; ?></td>
+                                <td><?php echo $manage['blog_title']; ?></td>
+                                <td><?php echo $manage['short_description']; ?></td>
+                                <td><?php echo $manage['long_description']; ?></td>
+                                <td><?php echo $manage['blog_image']; ?></td>
+                                <td><?php echo $manage['status']; ?></td>
+                                <td>
+                                    <a href="edit-blog.php?id=<?php echo $manage['id']; ?>">Edit</a>
+                                    <a href="?delete=true & id=<?php echo $manage['id']; ?>" onclick="return confirm('Are you sure to delete this !!!'); ">Delete</a>
+                                </td>
+                            </tr>
                         <?php } ?>
                         </tbody>
                     </table>
@@ -72,4 +77,5 @@
 <script src="../assets/js/bootstrap.min.js"></script>
 </body>
 </html>
+
 

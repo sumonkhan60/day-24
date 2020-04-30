@@ -1,15 +1,21 @@
 <?php
-session_start();
-if($_SESSION['id'] == null) {
-    header('Location: index.php');
-}
+    session_start();
+    if($_SESSION['id'] == null) {
+        header('Location: index.php');
+    }
 
-require_once '../vendor/autoload.php';
-$login = new App\classes\Login();
+    require_once '../vendor/autoload.php';
+    $login = new App\classes\Login();
+    $category = new App\classes\Category();
 
-if(isset($_GET['logout'])) {
-    $login->adminLogout();
-}
+    $message = "";
+    if(isset($_POST['btn'])) {
+        $message = $category->saveAllCategoryInfo($_POST);
+    }
+
+    if(isset($_GET['logout'])) {
+        $login->adminLogout();
+    }
 ?>
 <!DOCTYPE html>
 <html>
@@ -26,6 +32,7 @@ if(isset($_GET['logout'])) {
                 <div class="col-sm-8 mx-auto">
                     <div class="card">
                         <div class="card-body">
+                            <h3 style="color: green; "><?php echo $message; ?></h3>
                             <form action="" method="post">
                                 <div class="form-group row">
                                     <label for="inputEmail3" class="col-sm-3 col-form-label">Category Name</label>
@@ -42,8 +49,8 @@ if(isset($_GET['logout'])) {
                                 <div class="form-group row">
                                     <label for="inputEmail3" class="col-sm-3 col-form-label">Publication Status</label>
                                     <div class="col-sm-9">
-                                        <input type="radio" name="status" value="0">Published
-                                        <input type="radio" name="status" value="1">Unpublished
+                                        <input type="radio" name="status" value="Published">Published
+                                        <input type="radio" name="status" value="Unpublished">Unpublished
                                     </div>
                                 </div>
                                 <div class="form-group row">
